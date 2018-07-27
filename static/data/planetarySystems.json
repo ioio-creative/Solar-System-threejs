@@ -1,0 +1,115 @@
+{
+     "CelestialObjects": [
+         {
+           "name": "Sun",
+           "scale": "2",
+           "center": "0 0 0",
+           "radius": "0",
+           "position": "0",
+           "rotation": "0",
+           "period": "0",
+           "intensity": "1.0",
+           "color": "#fff000",
+           "texture": ""
+         },
+         {
+           "name": "Mercury",
+           "scale": "0.16",
+           "center": "0 0 0",
+           "radius": "2.8",
+           "position": "-123.54649",
+           "rotation": "0",
+           "period": "88",
+           "color": "#707070",
+           "texture": ""
+         },
+         {
+           "name": "Venus",
+           "scale": "0.4",
+           "center": "Sun",
+           "radius": "4",
+           "position": "-140.42042409742803",
+           "rotation": "0",
+           "period": "224.7",
+           "color": "#da742b",
+           "texture": ""
+         },
+         {
+           "name": "Earth",
+           "scale": "0.4",
+           "center": "Sun",
+           "radius": "5.5",
+           "position": "-50.08019314169412",
+           "rotation": "0",
+           "period": "365",
+           "color": "#313ab3",
+           "texture": ""
+         },
+         {
+           "name": "Mars",
+           "scale": "0.3",
+           "center": "Earth",
+           "radius": "7",
+           "position": "-52.2157213780263",
+           "rotation": "0",
+           "period": "686.98",
+           "color": "#9c362c",
+           "texture": ""
+         },
+         {
+           "name": "Jupiter",
+           "scale": "1",
+           "center": "Sun",
+           "radius": "10.724",
+           "position": "-134.7831351277301",
+           "rotation": "0",
+           "period": "4332.82",
+           "color": "#f2650b",
+           "texture": ""
+         },
+         {
+           "name": "Saturn",
+           "scale": "0.9",
+           "center": "Sun",
+           "radius": "14.12844",
+           "position": "-78.54840050547901",
+           "rotation": "0",
+           "period": "10755.7",
+           "color": "#d48029",
+           "texture": ""
+         },
+         {
+           "name": "Uranus",
+           "scale": "0.75",
+           "center": "Sun",
+           "radius": "17.88437169229927",
+           "position": "37.27618576161151",
+           "rotation": "0",
+           "period": "30687.15",
+           "color": "#7ed5cc",
+           "texture": ""
+         },
+         {
+           "name": "Neptune",
+           "scale": "0.75",
+           "center": "Sun",
+           "radius": "22.223883142755664",
+           "position": "-11.264657818189338",
+           "rotation": "0",
+           "period": "60190.03",
+           "color": "#26439c",
+           "texture": ""
+         },
+         {
+           "name": "Pluto",
+           "scale": "0.1",
+           "center": "Sun",
+           "radius": "27.007481094311125",
+           "position": "149.39822397516932",
+           "rotation": "0",
+           "period": "90560",
+           "color": "#5e5e5e",
+           "texture": ""
+         }
+     ]
+ }
