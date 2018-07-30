@@ -2,7 +2,8 @@ import './static/css/styles.scss'
 import planetarySystems from './static/data/planetarySystems.json'
 import { createCelestialObject } from './classes/_celestialObject.js'
 import { drawOrbit } from './classes/_orbits.js'
-import { hexToRgb } from './classes/_logic.js'
+import { createSky } from './classes/_sky.js'
+import sky from './static/img/milkyway.jpg'
 
 var THREE = require('three');
 var OrbitControls = require('three-orbit-controls')(THREE);
@@ -23,10 +24,14 @@ function init(containerId) {
 	container.appendChild( renderer.domElement );
 
 	//Camera and controls
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 ); //FOV, aspect ratio, near (closer won't be rendered), far (further than that won't be rendered)
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 ); //FOV, aspect ratio, near (closer won't be rendered), far (further than that won't be rendered)
 	camera.position.z = 5;
 	camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 	controls = new OrbitControls(camera, renderer.domElement);
+
+	//Ambient lighting
+  var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+  scene.add(ambientLight);
 }
 
 function onWindowResize() {
@@ -61,6 +66,8 @@ function render() {
 
 init("container");
 window.addEventListener( 'resize', onWindowResize );
+
+createSky(scene, sky);
 
 createCelestialObject(scene, planetarySystems.CelestialObjects[0]);
 

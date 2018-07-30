@@ -1,6 +1,6 @@
 import { isOrbiting, hexToRgb } from './_logic.js'
 
-var THREE = require('three')
+var THREE = require('three');
 
 export function drawOrbit(scene, celestialObject) {
   if (isOrbiting(celestialObject)) {

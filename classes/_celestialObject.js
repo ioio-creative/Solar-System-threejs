@@ -1,6 +1,6 @@
 import { isOrbiting, hexToRgb } from './_logic.js'
 
-var THREE = require('three')
+var THREE = require('three');
 
 export function createCelestialObject (scene, celestialObject) {
   var geometry = new THREE.SphereGeometry(parseFloat(celestialObject.scale), 50, 50);

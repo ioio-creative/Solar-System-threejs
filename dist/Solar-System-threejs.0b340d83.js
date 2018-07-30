@@ -185,7 +185,7 @@ module.exports = {
   }, {
     "name": "Mercury",
     "scale": "0.16",
-    "center": "0 0 0",
+    "center": "Sun",
     "radius": "2.8",
     "position": "-123.54649",
     "rotation": "0",
@@ -42704,7 +42704,28 @@ function getOrbitCoordinates(celestialObject) {
     // z: ,
   };
 }
-},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js"}],"node_modules/three-orbit-controls/index.js":[function(require,module,exports) {
+},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js"}],"classes/_sky.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createSky = createSky;
+
+var _logic = require('./_logic.js');
+
+var THREE = require('three');
+
+function createSky(scene, file) {
+  var geometry = new THREE.SphereGeometry(5000, 64, 32);
+  var texture = new THREE.TextureLoader().load(file);
+  var material = new THREE.MeshBasicMaterial({ color: (0, _logic.hexToRgb)("#FFF"), side: THREE.BackSide, map: texture });
+  var sky = new THREE.Mesh(geometry, material);
+  scene.add(sky);
+}
+},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js"}],"static/img/milkyway.jpg":[function(require,module,exports) {
+module.exports = "/milkyway.35f9054e.jpg";
+},{}],"node_modules/three-orbit-controls/index.js":[function(require,module,exports) {
 module.exports = function( THREE ) {
 	/**
 	 * @author qiao / https://github.com/qiao
@@ -43739,7 +43760,11 @@ var _celestialObject = require('./classes/_celestialObject.js');
 
 var _orbits = require('./classes/_orbits.js');
 
-var _logic = require('./classes/_logic.js');
+var _sky = require('./classes/_sky.js');
+
+var _milkyway = require('./static/img/milkyway.jpg');
+
+var _milkyway2 = _interopRequireDefault(_milkyway);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43762,10 +43787,14 @@ function init(containerId) {
   container.appendChild(renderer.domElement);
 
   //Camera and controls
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); //FOV, aspect ratio, near (closer won't be rendered), far (further than that won't be rendered)
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000); //FOV, aspect ratio, near (closer won't be rendered), far (further than that won't be rendered)
   camera.position.z = 5;
   camera.lookAt(new THREE.Vector3(0, 0, 0));
   controls = new OrbitControls(camera, renderer.domElement);
+
+  //Ambient lighting
+  var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+  scene.add(ambientLight);
 }
 
 function onWindowResize() {
@@ -43800,10 +43829,12 @@ function render() {
 init("container");
 window.addEventListener('resize', onWindowResize);
 
+(0, _sky.createSky)(scene, _milkyway2.default);
+
 (0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[0]);
 
 start();
-},{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -43832,7 +43863,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '51140' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50600' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
