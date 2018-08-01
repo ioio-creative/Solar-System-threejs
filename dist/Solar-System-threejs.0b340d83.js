@@ -175,20 +175,26 @@ module.exports = {
     "name": "Sun",
     "scale": "2",
     "center": "0 0 0",
-    "radius": "0",
-    "position": "0",
-    "rotation": "0",
-    "period": "0",
+    "eccentricity": "0.5",
+    "semimajor_axis": "8",
+    "inclination": "2",
+    "longitude": "2.1",
+    "periapsis_arg": "1.5",
+    "mean_anomaly": "0",
+    "period": "880",
     "intensity": "1.0",
     "color": "#fff000",
     "texture": ""
   }, {
     "name": "Mercury",
-    "scale": "0.16",
+    "scale": "0.8",
     "center": "Sun",
-    "radius": "2.8",
-    "position": "-123.54649",
-    "rotation": "0",
+    "eccentricity": "0.2",
+    "semimajor_axis": "5",
+    "inclination": "2",
+    "longitude": "2.1",
+    "periapsis_arg": "1.5",
+    "mean_anomaly": "0",
     "period": "88",
     "color": "#707070",
     "texture": ""
@@ -196,9 +202,12 @@ module.exports = {
     "name": "Venus",
     "scale": "0.4",
     "center": "Sun",
-    "radius": "4",
-    "position": "-140.42042409742803",
-    "rotation": "0",
+    "eccentricity": "1",
+    "semimajor_axis": "1",
+    "inclination": "1",
+    "longitude": "1",
+    "periapsis_arg": "1",
+    "mean_anomaly": "1",
     "period": "224.7",
     "color": "#da742b",
     "texture": ""
@@ -206,9 +215,12 @@ module.exports = {
     "name": "Earth",
     "scale": "0.4",
     "center": "Sun",
-    "radius": "5.5",
-    "position": "-50.08019314169412",
-    "rotation": "0",
+    "eccentricity": "1",
+    "semimajor_axis": "1",
+    "inclination": "1",
+    "longitude": "1",
+    "periapsis_arg": "1",
+    "mean_anomaly": "1",
     "period": "365",
     "color": "#313ab3",
     "texture": ""
@@ -216,9 +228,12 @@ module.exports = {
     "name": "Mars",
     "scale": "0.3",
     "center": "Earth",
-    "radius": "7",
-    "position": "-52.2157213780263",
-    "rotation": "0",
+    "eccentricity": "1",
+    "semimajor_axis": "1",
+    "inclination": "1",
+    "longitude": "1",
+    "periapsis_arg": "1",
+    "mean_anomaly": "1",
     "period": "686.98",
     "color": "#9c362c",
     "texture": ""
@@ -226,9 +241,12 @@ module.exports = {
     "name": "Jupiter",
     "scale": "1",
     "center": "Sun",
-    "radius": "10.724",
-    "position": "-134.7831351277301",
-    "rotation": "0",
+    "eccentricity": "1",
+    "semimajor_axis": "1",
+    "inclination": "1",
+    "longitude": "1",
+    "periapsis_arg": "1",
+    "mean_anomaly": "1",
     "period": "4332.82",
     "color": "#f2650b",
     "texture": ""
@@ -236,9 +254,12 @@ module.exports = {
     "name": "Saturn",
     "scale": "0.9",
     "center": "Sun",
-    "radius": "14.12844",
-    "position": "-78.54840050547901",
-    "rotation": "0",
+    "eccentricity": "1",
+    "semimajor_axis": "1",
+    "inclination": "1",
+    "longitude": "1",
+    "periapsis_arg": "1",
+    "mean_anomaly": "1",
     "period": "10755.7",
     "color": "#d48029",
     "texture": ""
@@ -246,9 +267,12 @@ module.exports = {
     "name": "Uranus",
     "scale": "0.75",
     "center": "Sun",
-    "radius": "17.88437169229927",
-    "position": "37.27618576161151",
-    "rotation": "0",
+    "eccentricity": "1",
+    "semimajor_axis": "1",
+    "inclination": "1",
+    "longitude": "1",
+    "periapsis_arg": "1",
+    "mean_anomaly": "1",
     "period": "30687.15",
     "color": "#7ed5cc",
     "texture": ""
@@ -256,9 +280,12 @@ module.exports = {
     "name": "Neptune",
     "scale": "0.75",
     "center": "Sun",
-    "radius": "22.223883142755664",
-    "position": "-11.264657818189338",
-    "rotation": "0",
+    "eccentricity": "1",
+    "semimajor_axis": "1",
+    "inclination": "1",
+    "longitude": "1",
+    "periapsis_arg": "1",
+    "mean_anomaly": "1",
     "period": "60190.03",
     "color": "#26439c",
     "texture": ""
@@ -266,9 +293,12 @@ module.exports = {
     "name": "Pluto",
     "scale": "0.1",
     "center": "Sun",
-    "radius": "27.007481094311125",
-    "position": "149.39822397516932",
-    "rotation": "0",
+    "eccentricity": "1",
+    "semimajor_axis": "1",
+    "inclination": "1",
+    "longitude": "1",
+    "periapsis_arg": "1",
+    "mean_anomaly": "1",
     "period": "90560",
     "color": "#5e5e5e",
     "texture": ""
@@ -281,6 +311,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.isOrbiting = isOrbiting;
+exports.wrapNumber = wrapNumber;
+exports.degtoRad = degtoRad;
+exports.radtoDeg = radtoDeg;
 exports.hexToRgb = hexToRgb;
 function isOrbiting(celestialObject) {
   var centerArray = celestialObject.center.split(" ", 3);
@@ -291,6 +324,22 @@ function isOrbiting(celestialObject) {
     //Is orbiting something else
     return true;
   }
+}
+
+function wrapNumber(number, wrap) {
+  if (number > wrap) {
+    return number - (number - number % wrap);
+  } else {
+    return number;
+  }
+}
+
+function degtoRad(number) {
+  return number * Math.PI / 180;
+}
+
+function radtoDeg(number) {
+  return number * 180 / Math.PI;
 }
 
 function hexToRgb(hex) {
@@ -42675,7 +42724,45 @@ function createCelestialObject(scene, celestialObject) {
   //Add the celestialObject to the scene
   scene.add(object);
 }
-},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js"}],"classes/_orbits.js":[function(require,module,exports) {
+},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js"}],"node_modules/newton-raphson/index.js":[function(require,module,exports) {
+var define;
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
+    } else {
+        root.newtonRaphson = factory();
+  }
+}(this, function () {
+  return function findRoot(f, fprime, guess, options) {
+    options = options || {};
+    var tolerance = options.tolerance || 0.00000001;
+    var epsilon = options.epsilon || 0.0000000000001;
+    var maxIterations = options.maxIterations || 20;
+    var haveWeFoundSolution = false; 
+    var newtonX;
+   
+    for (var i = 0; i < maxIterations; ++i) {
+      var denominator = fprime(guess);
+      if (Math.abs(denominator) < epsilon) {
+        return false
+      }
+   
+      result = guess - (f(guess) / denominator);
+      
+      var resultWithinTolerance = Math.abs(result - guess) < tolerance;
+      if (resultWithinTolerance) { 
+        return result
+      }
+
+      guess = result;
+    }
+    
+    return false;
+  }
+}));
+},{}],"classes/_orbits.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42686,25 +42773,90 @@ exports.drawOrbit = drawOrbit;
 var _logic = require('./_logic.js');
 
 var THREE = require('three');
+var findRoot = require('newton-raphson');
 
 function drawOrbit(scene, celestialObject) {
+  var deltaT = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+  var animationSpeed = arguments[3];
+
+  var meanAnomaly = getMeanAnomaly(celestialObject, deltaT, animationSpeed);
+  var eccentricAnomaly = getEccentricAnomaly(celestialObject, meanAnomaly);
+  var trueAnomaly = getTrueAnomaly(celestialObject, eccentricAnomaly);
+  var radius = getRadius(celestialObject, trueAnomaly);
+  var coordinates = orbitCoordinates(celestialObject, trueAnomaly, radius);
+  var objectToDraw = scene.getObjectByName(celestialObject.name);
+
+  // console.log(trueAnomaly);
   if ((0, _logic.isOrbiting)(celestialObject)) {
     //Fetch parent body center and use that as its center
     var parentBody = scene.getObjectByName(celestialObject.center);
+    var pivot = new THREE.Object3D();
+    objectToDraw.position.x = parentBody.position.x + coordinates.x;
+    objectToDraw.position.y = parentBody.position.y + coordinates.y;
+    objectToDraw.position.z = parentBody.position.z + coordinates.z;
   } else {
-    //Draw orbit directly using orbit parameters
+    // Draw orbit directly using orbit parameters
+    objectToDraw.position.x = coordinates.x;
+    objectToDraw.position.y = coordinates.y;
+    objectToDraw.position.z = coordinates.z;
   }
 }
 
-function getOrbitCoordinates(celestialObject) {
+//Time to get mathy
+
+function getMeanAnomaly(celestialObject, deltaT, animationSpeed) {
+  var meanAnomaly = parseFloat(celestialObject.mean_anomaly);
+  var newMeanAnomaly = meanAnomaly + 2 * Math.PI / (celestialObject.period * (1 / animationSpeed)) * deltaT;
+  return (0, _logic.wrapNumber)(newMeanAnomaly, 2 * Math.PI);
+}
+
+function getEccentricAnomaly(celestialObject, meanAnomaly) {
+  var eccentricity = parseFloat(celestialObject.eccentricity);
+  // Function and first and second derivatives to use the Newton-Raphson method to approximate a root
+  function f(x) {
+    return x - eccentricity * Math.sin(x) - meanAnomaly;
+  }
+  function fp(x) {
+    return 1 - eccentricity * Math.cos(x);
+  }
+
+  return (0, _logic.wrapNumber)(findRoot(f, fp, Math.PI), 2 * Math.PI);
+}
+
+function getTrueAnomaly(celestialObject, eccentricAnomaly) {
+  var eccentricity = parseFloat(celestialObject.eccentricity);
+  var trueAnomaly = 2 * Math.atan(Math.pow((1 + eccentricity) / (1 - eccentricity), 0.5) * Math.tan(eccentricAnomaly / 2));
+  if (trueAnomaly < 0) {
+    trueAnomaly = trueAnomaly + 2 * Math.PI;
+    return trueAnomaly;
+  } else {
+    return trueAnomaly;
+  }
+}
+
+function getRadius(celestialObject, trueAnomaly) {
+  var semimajor_axis = parseFloat(celestialObject.semimajor_axis);
+  var eccentricity = parseFloat(celestialObject.eccentricity);
+  return semimajor_axis * (1 - Math.pow(eccentricity, 2)) / (1 + eccentricity * Math.cos(trueAnomaly));
+}
+
+function orbitCoordinates(celestialObject, trueAnomaly, radius) {
+  var true_anomaly = trueAnomaly;
+  var longitude = parseFloat(celestialObject.longitude);
+  var periapsis_arg = parseFloat(celestialObject.periapsis_arg);
+  var inclination = parseFloat(celestialObject.inclination);
+
+  var x = radius * (Math.cos(longitude) * Math.cos(periapsis_arg + true_anomaly) - Math.sin(longitude) * Math.sin(periapsis_arg + true_anomaly) * Math.cos(inclination));
+  var y = radius * (Math.sin(longitude) * Math.cos(periapsis_arg + true_anomaly) + Math.cos(longitude) * Math.sin(periapsis_arg + true_anomaly) * Math.cos(inclination));
+  var z = radius * (Math.sin(inclination) * Math.sin(periapsis_arg + true_anomaly));
 
   return {
-    // x: ,
-    // y: ,
-    // z: ,
+    x: x,
+    y: y,
+    z: z
   };
 }
-},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js"}],"classes/_sky.js":[function(require,module,exports) {
+},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js","newton-raphson":"node_modules/newton-raphson/index.js"}],"classes/_sky.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43747,6 +43899,109 @@ module.exports = function( THREE ) {
 	return OrbitControls;
 };
 
+},{}],"node_modules/modified-newton-raphson/index.js":[function(require,module,exports) {
+'use strict';
+
+module.exports = modifiedNewtonRaphson;
+
+function modifiedNewtonRaphson (f, fp, fpp, x0, options) {
+  var x1, y, yp, ypp, tol, maxIter, iter, yph, ymh, yp2h, ym2h, h, hr, h2r, verbose, eps, denom;
+
+  // Iterpret variadic forms:
+  if (typeof fpp !== 'function') {
+    if (typeof fp === 'function') {
+      options = x0;
+      x0 = fpp;
+    } else {
+      options = fpp;
+      x0 = fp;
+      fp = null;
+    }
+    fpp = null;
+  }
+
+  options = options || {};
+  tol = options.tolerance === undefined ? 1e-7 : options.tolerance;
+  eps = options.epsilon === undefined ? 2.220446049250313e-16 : options.epsion;
+  maxIter = options.maxIterations === undefined ? 20 : options.maxIterations;
+  h = options.h === undefined ? 1e-4 : options.h;
+  verbose = options.verbose === undefined ? false : options.verbose;
+  hr = 1 / h;
+  h2r = hr * hr;
+
+  iter = 0;
+  while (iter++ < maxIter) {
+    // Compute the value of the function:
+    y = f(x0);
+
+    // Compute the second derivative using a fourth order central difference:
+    if (fpp) {
+      yp = fp(x0);
+      ypp = fpp(x0);
+    } else {
+      if (fp) {
+        // Has first derivative specified:
+        yp = fp(x0);
+
+        // Evaluate first derivative to compute second numerically:
+        yph = fp(x0 + h);
+        ymh = fp(x0 - h);
+        yp2h = fp(x0 + 2 * h);
+        ym2h = fp(x0 - 2 * h);
+
+        // Second derivative is first derivative of the first derivative:
+        ypp = (8 * (yph - ymh) + (ym2h - yp2h)) * hr / 12;
+      } else {
+        // Needs first and second numerical derivatives:
+        yph = f(x0 + h);
+        ymh = f(x0 - h);
+        yp2h = f(x0 + 2 * h);
+        ym2h = f(x0 - 2 * h);
+
+        yp = (8 * (yph - ymh) + (ym2h - yp2h)) * hr / 12;
+        ypp = (-30 * y + 16 * (yph + ymh) - (yp2h + ym2h)) * h2r / 12;
+      }
+    }
+
+    // Check for badly conditioned first derivative (extremely small relative to function):
+    if (Math.abs(yp) <= eps * Math.abs(y)) {
+      if (verbose) {
+        console.log('Modified Newton-Raphson: failed to converged due to nearly zero first derivative');
+      }
+      return false;
+    }
+
+    denom = (yp * yp - y * ypp);
+
+    if (denom === 0) {
+      if (verbose) {
+        console.log('Modified Newton-Raphson: failed to converged due to divide by zero');
+      }
+      return false;
+    }
+
+    // Update the guess:
+    x1 = x0 - y * yp / denom;
+
+    // Check for convergence:
+    if (Math.abs(x1 - x0) <= tol * Math.abs(x1)) {
+      if (verbose) {
+        console.log('Modified Newton-Raphson: converged to x = ' + x1 + ' after ' + iter + ' iterations');
+      }
+      return x1;
+    }
+
+    // Transfer update to the new guess:
+    x0 = x1;
+  }
+
+  if (verbose) {
+    console.log('Modified Newton-Raphson: Maximum iterations reached (' + maxIter + ')');
+  }
+
+  return false;
+}
+
 },{}],"index.js":[function(require,module,exports) {
 'use strict';
 
@@ -43770,6 +44025,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var THREE = require('three');
 var OrbitControls = require('three-orbit-controls')(THREE);
+var findRoot = require('modified-newton-raphson');
 
 var scene;
 var renderer;
@@ -43777,53 +44033,61 @@ var camera;
 var controls;
 var container;
 
+var animationSpeed = 1;
+var deltaT = 0;
+
 function init(containerId) {
-  //Setup scene and renderer
-  container = document.getElementById(containerId);
-  scene = new THREE.Scene();
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(container.clientWidth, container.clientHeight, false);
-  container.appendChild(renderer.domElement);
+		//Setup scene and renderer
+		container = document.getElementById(containerId);
+		scene = new THREE.Scene();
+		renderer = new THREE.WebGLRenderer({ antialias: true });
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(container.clientWidth, container.clientHeight, false);
+		container.appendChild(renderer.domElement);
 
-  //Camera and controls
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000); //FOV, aspect ratio, near (closer won't be rendered), far (further than that won't be rendered)
-  camera.position.z = 5;
-  camera.lookAt(new THREE.Vector3(0, 0, 0));
-  controls = new OrbitControls(camera, renderer.domElement);
+		//Camera and controls
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000); //FOV, aspect ratio, near (closer won't be rendered), far (further than that won't be rendered)
+		camera.position.z = 5;
+		camera.lookAt(new THREE.Vector3(0, 0, 0));
+		controls = new OrbitControls(camera, renderer.domElement);
 
-  //Ambient lighting
-  var ambientLight = new THREE.AmbientLight(0x0c0c0c);
-  scene.add(ambientLight);
+		//Ambient lighting
+		var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+		scene.add(ambientLight);
 }
 
 function onWindowResize() {
-  // set the aspect ratio to match the new browser window aspect ratio
-  camera.aspect = container.clientWidth / container.clientHeight;
-  // update the camera's frustum
-  camera.updateProjectionMatrix();
-  // update the size of the renderer AND the canvas
-  renderer.setSize(container.clientWidth, container.clientHeight);
+		// set the aspect ratio to match the new browser window aspect ratio
+		camera.aspect = container.clientWidth / container.clientHeight;
+		// update the camera's frustum
+		camera.updateProjectionMatrix();
+		// update the size of the renderer AND the canvas
+		renderer.setSize(container.clientWidth, container.clientHeight);
 }
 
 function start() {
-  renderer.setAnimationLoop(function () {
-    update();
-    render();
-  });
+		renderer.setAnimationLoop(function () {
+				update();
+				render();
+		});
 }
 
 function stop() {
-  renderer.setAnimationLoop(null);
+		renderer.setAnimationLoop(null);
 }
 
 // perform any updates to the scene, called once per frame
 // avoid heavy computation here
-function update() {}
+function update() {
+		//Draw orbit functionality here
+		(0, _orbits.drawOrbit)(scene, _planetarySystems2.default.CelestialObjects[0], deltaT, animationSpeed);
+		(0, _orbits.drawOrbit)(scene, _planetarySystems2.default.CelestialObjects[1], deltaT, animationSpeed);
+		deltaT += 1;
+}
 
 // render, or 'draw a still image', of the scene
 function render() {
-  renderer.render(scene, camera);
+		renderer.render(scene, camera);
 }
 
 init("container");
@@ -43832,9 +44096,10 @@ window.addEventListener('resize', onWindowResize);
 (0, _sky.createSky)(scene, _milkyway2.default);
 
 (0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[0]);
+(0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[1]);
 
 start();
-},{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js","modified-newton-raphson":"node_modules/modified-newton-raphson/index.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -43863,7 +44128,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50600' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '51015' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

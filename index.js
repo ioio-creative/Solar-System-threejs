@@ -7,12 +7,16 @@ import sky from './static/img/milkyway.jpg'
 
 var THREE = require('three');
 var OrbitControls = require('three-orbit-controls')(THREE);
+var findRoot = require('modified-newton-raphson');
 
 var scene;
 var renderer;
 var camera;
 var controls;
 var container;
+
+var animationSpeed = 1;
+var deltaT = 0;
 
 function init(containerId) {
 	//Setup scene and renderer
@@ -57,6 +61,10 @@ function stop() {
 // perform any updates to the scene, called once per frame
 // avoid heavy computation here
 function update() {
+	//Draw orbit functionality here
+	drawOrbit(scene, planetarySystems.CelestialObjects[0], deltaT, animationSpeed);
+	drawOrbit(scene, planetarySystems.CelestialObjects[1], deltaT, animationSpeed);
+	deltaT += 1;
 }
 
 // render, or 'draw a still image', of the scene
@@ -70,5 +78,7 @@ window.addEventListener( 'resize', onWindowResize );
 createSky(scene, sky);
 
 createCelestialObject(scene, planetarySystems.CelestialObjects[0]);
+createCelestialObject(scene, planetarySystems.CelestialObjects[1]);
+
 
 start();

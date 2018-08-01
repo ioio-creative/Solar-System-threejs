@@ -9,6 +9,22 @@ export function isOrbiting(celestialObject) {
   }
 }
 
+export function wrapNumber(number, wrap) {
+  if (number > wrap) {
+    return number - (number - (number % wrap))
+  } else {
+    return number;
+  }
+}
+
+export function degtoRad(number) {
+  return number * Math.PI / 180;
+}
+
+export function radtoDeg(number) {
+  return number * 180 / Math.PI;
+}
+
 export function hexToRgb(hex) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
