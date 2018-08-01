@@ -17,8 +17,16 @@ export function wrapNumber(number, wrap) {
   }
 }
 
-export function degtoRad(number) {
-  return number * Math.PI / 180;
+export function checkDegToRad(number) {
+  var numberArray = number.split(" ", 2);
+  var parsedNum = parseFloat(numberArray[0]);
+  if (typeof parsedNum === "number" && numberArray[1] === "deg") {
+    //Is degree
+    return parsedNum * Math.PI / 180;
+  } else {
+    //Is not degree
+    return parsedNum;
+  }
 }
 
 export function radtoDeg(number) {

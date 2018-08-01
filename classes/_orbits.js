@@ -1,4 +1,4 @@
-import { isOrbiting, wrapNumber, hexToRgb } from './_logic.js'
+import { isOrbiting, wrapNumber, checkDegToRad, hexToRgb } from './_logic.js'
 
 var THREE = require('three');
 var findRoot = require('newton-raphson');
@@ -15,7 +15,6 @@ export function drawOrbit(scene, celestialObject, deltaT = 0, animationSpeed) {
   if (isOrbiting(celestialObject)) {
     //Fetch parent body center and use that as its center
     var parentBody = scene.getObjectByName(celestialObject.center);
-    var pivot = new THREE.Object3D();
     objectToDraw.position.x = parentBody.position.x + coordinates.x;
     objectToDraw.position.y = parentBody.position.y + coordinates.y;
     objectToDraw.position.z = parentBody.position.z + coordinates.z;
@@ -30,7 +29,7 @@ export function drawOrbit(scene, celestialObject, deltaT = 0, animationSpeed) {
 //Time to get mathy
 
 function getMeanAnomaly(celestialObject, deltaT, animationSpeed) {
-  var meanAnomaly = parseFloat(celestialObject.mean_anomaly);
+  var meanAnomaly = checkDegToRad(celestialObject.mean_anomaly);
   var newMeanAnomaly = meanAnomaly + ((2 * Math.PI)/(celestialObject.period * (1/animationSpeed) )) * deltaT;
   return wrapNumber(newMeanAnomaly, 2 * Math.PI);
 }
@@ -63,9 +62,9 @@ function getRadius(celestialObject, trueAnomaly) {
 
 function orbitCoordinates(celestialObject, trueAnomaly, radius) {
   var true_anomaly = trueAnomaly;
-  var longitude = parseFloat(celestialObject.longitude);
-  var periapsis_arg = parseFloat(celestialObject.periapsis_arg);
-  var inclination = parseFloat(celestialObject.inclination);
+  var longitude = checkDegToRad(celestialObject.longitude);
+  var periapsis_arg = checkDegToRad(celestialObject.periapsis_arg);
+  var inclination = checkDegToRad(celestialObject.inclination);
 
   var x = radius * ( Math.cos(longitude) * Math.cos(periapsis_arg + true_anomaly) - Math.sin(longitude) * Math.sin(periapsis_arg + true_anomaly) * Math.cos(inclination) );
   var y = radius * ( Math.sin(longitude) * Math.cos(periapsis_arg + true_anomaly) + Math.cos(longitude) * Math.sin(periapsis_arg + true_anomaly) * Math.cos(inclination) );

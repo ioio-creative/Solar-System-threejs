@@ -64,6 +64,7 @@ function update() {
 	//Draw orbit functionality here
 	drawOrbit(scene, planetarySystems.CelestialObjects[0], deltaT, animationSpeed);
 	drawOrbit(scene, planetarySystems.CelestialObjects[1], deltaT, animationSpeed);
+	drawOrbit(scene, planetarySystems.CelestialObjects[2], deltaT, animationSpeed);
 	deltaT += 1;
 }
 
@@ -79,6 +80,7 @@ createSky(scene, sky);
 
 createCelestialObject(scene, planetarySystems.CelestialObjects[0]);
 createCelestialObject(scene, planetarySystems.CelestialObjects[1]);
+createCelestialObject(scene, planetarySystems.CelestialObjects[2]);
 
 
 start();

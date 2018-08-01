@@ -175,26 +175,26 @@ module.exports = {
     "name": "Sun",
     "scale": "2",
     "center": "0 0 0",
-    "eccentricity": "0.5",
-    "semimajor_axis": "8",
-    "inclination": "2",
-    "longitude": "2.1",
-    "periapsis_arg": "1.5",
+    "eccentricity": "0",
+    "semimajor_axis": "0",
+    "inclination": "0",
+    "longitude": "0",
+    "periapsis_arg": "0",
     "mean_anomaly": "0",
-    "period": "880",
+    "period": "0",
     "intensity": "1.0",
     "color": "#fff000",
     "texture": ""
   }, {
     "name": "Mercury",
-    "scale": "0.8",
+    "scale": "0.16",
     "center": "Sun",
-    "eccentricity": "0.2",
-    "semimajor_axis": "5",
-    "inclination": "2",
-    "longitude": "2.1",
-    "periapsis_arg": "1.5",
-    "mean_anomaly": "0",
+    "eccentricity": "0.205",
+    "semimajor_axis": "3.87",
+    "inclination": "3.38 deg",
+    "longitude": "2.1 deg",
+    "periapsis_arg": "29.124 deg",
+    "mean_anomaly": "174.796 deg",
     "period": "88",
     "color": "#707070",
     "texture": ""
@@ -202,12 +202,12 @@ module.exports = {
     "name": "Venus",
     "scale": "0.4",
     "center": "Sun",
-    "eccentricity": "1",
-    "semimajor_axis": "1",
-    "inclination": "1",
-    "longitude": "1",
-    "periapsis_arg": "1",
-    "mean_anomaly": "1",
+    "eccentricity": "0.006772",
+    "semimajor_axis": "7.18",
+    "inclination": "3.86 deg",
+    "longitude": "76.68 deg",
+    "periapsis_arg": "54.884 deg",
+    "mean_anomaly": "50.115 deg",
     "period": "224.7",
     "color": "#da742b",
     "texture": ""
@@ -215,19 +215,19 @@ module.exports = {
     "name": "Earth",
     "scale": "0.4",
     "center": "Sun",
-    "eccentricity": "1",
-    "semimajor_axis": "1",
-    "inclination": "1",
-    "longitude": "1",
-    "periapsis_arg": "1",
-    "mean_anomaly": "1",
+    "eccentricity": "0.016",
+    "semimajor_axis": "10",
+    "inclination": "7.155 deg",
+    "longitude": "0",
+    "periapsis_arg": "114.207 deg",
+    "mean_anomaly": "358.617 deg",
     "period": "365",
     "color": "#313ab3",
     "texture": ""
   }, {
     "name": "Mars",
     "scale": "0.3",
-    "center": "Earth",
+    "center": "Sun",
     "eccentricity": "1",
     "semimajor_axis": "1",
     "inclination": "1",
@@ -312,7 +312,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.isOrbiting = isOrbiting;
 exports.wrapNumber = wrapNumber;
-exports.degtoRad = degtoRad;
+exports.checkDegToRad = checkDegToRad;
 exports.radtoDeg = radtoDeg;
 exports.hexToRgb = hexToRgb;
 function isOrbiting(celestialObject) {
@@ -334,8 +334,16 @@ function wrapNumber(number, wrap) {
   }
 }
 
-function degtoRad(number) {
-  return number * Math.PI / 180;
+function checkDegToRad(number) {
+  var numberArray = number.split(" ", 2);
+  var parsedNum = parseFloat(numberArray[0]);
+  if (typeof parsedNum === "number" && numberArray[1] === "deg") {
+    //Is degree
+    return parsedNum * Math.PI / 180;
+  } else {
+    //Is not degree
+    return parsedNum;
+  }
 }
 
 function radtoDeg(number) {
@@ -42790,7 +42798,6 @@ function drawOrbit(scene, celestialObject) {
   if ((0, _logic.isOrbiting)(celestialObject)) {
     //Fetch parent body center and use that as its center
     var parentBody = scene.getObjectByName(celestialObject.center);
-    var pivot = new THREE.Object3D();
     objectToDraw.position.x = parentBody.position.x + coordinates.x;
     objectToDraw.position.y = parentBody.position.y + coordinates.y;
     objectToDraw.position.z = parentBody.position.z + coordinates.z;
@@ -42805,7 +42812,7 @@ function drawOrbit(scene, celestialObject) {
 //Time to get mathy
 
 function getMeanAnomaly(celestialObject, deltaT, animationSpeed) {
-  var meanAnomaly = parseFloat(celestialObject.mean_anomaly);
+  var meanAnomaly = (0, _logic.checkDegToRad)(celestialObject.mean_anomaly);
   var newMeanAnomaly = meanAnomaly + 2 * Math.PI / (celestialObject.period * (1 / animationSpeed)) * deltaT;
   return (0, _logic.wrapNumber)(newMeanAnomaly, 2 * Math.PI);
 }
@@ -42842,9 +42849,9 @@ function getRadius(celestialObject, trueAnomaly) {
 
 function orbitCoordinates(celestialObject, trueAnomaly, radius) {
   var true_anomaly = trueAnomaly;
-  var longitude = parseFloat(celestialObject.longitude);
-  var periapsis_arg = parseFloat(celestialObject.periapsis_arg);
-  var inclination = parseFloat(celestialObject.inclination);
+  var longitude = (0, _logic.checkDegToRad)(celestialObject.longitude);
+  var periapsis_arg = (0, _logic.checkDegToRad)(celestialObject.periapsis_arg);
+  var inclination = (0, _logic.checkDegToRad)(celestialObject.inclination);
 
   var x = radius * (Math.cos(longitude) * Math.cos(periapsis_arg + true_anomaly) - Math.sin(longitude) * Math.sin(periapsis_arg + true_anomaly) * Math.cos(inclination));
   var y = radius * (Math.sin(longitude) * Math.cos(periapsis_arg + true_anomaly) + Math.cos(longitude) * Math.sin(periapsis_arg + true_anomaly) * Math.cos(inclination));
@@ -44082,6 +44089,7 @@ function update() {
 		//Draw orbit functionality here
 		(0, _orbits.drawOrbit)(scene, _planetarySystems2.default.CelestialObjects[0], deltaT, animationSpeed);
 		(0, _orbits.drawOrbit)(scene, _planetarySystems2.default.CelestialObjects[1], deltaT, animationSpeed);
+		(0, _orbits.drawOrbit)(scene, _planetarySystems2.default.CelestialObjects[2], deltaT, animationSpeed);
 		deltaT += 1;
 }
 
@@ -44097,6 +44105,7 @@ window.addEventListener('resize', onWindowResize);
 
 (0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[0]);
 (0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[1]);
+(0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[2]);
 
 start();
 },{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js","modified-newton-raphson":"node_modules/modified-newton-raphson/index.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
