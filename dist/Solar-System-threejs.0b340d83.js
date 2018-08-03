@@ -311,6 +311,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.isOrbiting = isOrbiting;
+exports.getParentBody = getParentBody;
 exports.wrapNumber = wrapNumber;
 exports.checkDegToRad = checkDegToRad;
 exports.radtoDeg = radtoDeg;
@@ -323,6 +324,18 @@ function isOrbiting(celestialObject) {
   } else {
     //Is orbiting something else
     return true;
+  }
+}
+
+//Search for array for the the parent body
+function getParentBody(celestialObject, celestialObjectArray) {
+  for (var i = 0; i < celestialObjectArray.length; i++) {
+    if (celestialObjectArray[i].name === celestialObject.center) {
+      //Found the parent body
+      return {
+        inclination: celestialObjectArray[i].inclination
+      };
+    }
   }
 }
 
@@ -42796,30 +42809,33 @@ function drawOrbitsFromArray(celestialObjectArray, scene) {
   var animationSpeed = arguments[3];
 
   for (var i = 0; i < celestialObjectArray.length; i++) {
-    drawOrbit(scene, celestialObjectArray[i], deltaT, animationSpeed);
+    drawOrbit(scene, celestialObjectArray[i], celestialObjectArray, deltaT, animationSpeed);
   }
 }
 
-function drawOrbit(scene, celestialObject) {
-  var deltaT = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-  var animationSpeed = arguments[3];
+function drawOrbit(scene, celestialObject, celestialObjectArray) {
+  var deltaT = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+  var animationSpeed = arguments[4];
 
   var meanAnomaly = getMeanAnomaly(celestialObject, deltaT, animationSpeed);
   var eccentricAnomaly = getEccentricAnomaly(celestialObject, meanAnomaly);
   var trueAnomaly = getTrueAnomaly(celestialObject, eccentricAnomaly);
   var radius = getRadius(celestialObject, trueAnomaly);
-  var coordinates = orbitCoordinates(celestialObject, trueAnomaly, radius);
   var objectToDraw = scene.getObjectByName(celestialObject.name);
 
   // console.log(trueAnomaly);
   if ((0, _logic.isOrbiting)(celestialObject)) {
     //Fetch parent body center and use that as its center
     var parentBody = scene.getObjectByName(celestialObject.center);
+    var inclination = (0, _logic.checkDegToRad)(celestialObject.inclination) + (0, _logic.checkDegToRad)((0, _logic.getParentBody)(celestialObject, celestialObjectArray).inclination);
+    var coordinates = orbitCoordinates(celestialObject, trueAnomaly, radius, inclination);
     objectToDraw.position.x = parentBody.position.x + coordinates.x;
     objectToDraw.position.y = parentBody.position.y + coordinates.y;
     objectToDraw.position.z = parentBody.position.z + coordinates.z;
   } else {
     // Draw orbit directly using orbit parameters
+    var inclination = (0, _logic.checkDegToRad)(celestialObject.inclination);
+    var coordinates = orbitCoordinates(celestialObject, trueAnomaly, radius, inclination);
     objectToDraw.position.x = coordinates.x;
     objectToDraw.position.y = coordinates.y;
     objectToDraw.position.z = coordinates.z;
@@ -42864,11 +42880,10 @@ function getRadius(celestialObject, trueAnomaly) {
   return semimajor_axis * (1 - Math.pow(eccentricity, 2)) / (1 + eccentricity * Math.cos(trueAnomaly));
 }
 
-function orbitCoordinates(celestialObject, trueAnomaly, radius) {
+function orbitCoordinates(celestialObject, trueAnomaly, radius, inclination) {
   var true_anomaly = trueAnomaly;
   var longitude = (0, _logic.checkDegToRad)(celestialObject.longitude);
   var periapsis_arg = (0, _logic.checkDegToRad)(celestialObject.periapsis_arg);
-  var inclination = (0, _logic.checkDegToRad)(celestialObject.inclination);
 
   var x = radius * (Math.cos(longitude) * Math.cos(periapsis_arg + true_anomaly) - Math.sin(longitude) * Math.sin(periapsis_arg + true_anomaly) * Math.cos(inclination));
   var y = radius * (Math.sin(longitude) * Math.cos(periapsis_arg + true_anomaly) + Math.cos(longitude) * Math.sin(periapsis_arg + true_anomaly) * Math.cos(inclination));
@@ -44067,6 +44082,7 @@ function init(containerId) {
 		renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(container.clientWidth, container.clientHeight, false);
+		renderer.physicallyCorrectLights = true;
 		container.appendChild(renderer.domElement);
 
 		//Camera and controls

@@ -25,6 +25,7 @@ function init(containerId) {
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( container.clientWidth, container.clientHeight, false );
+	renderer.physicallyCorrectLights = true;
 	container.appendChild( renderer.domElement );
 
 	//Camera and controls

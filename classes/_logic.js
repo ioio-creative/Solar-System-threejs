@@ -9,6 +9,18 @@ export function isOrbiting(celestialObject) {
   }
 }
 
+//Search for array for the the parent body
+export function getParentBody(celestialObject, celestialObjectArray) {
+  for (var i = 0; i < celestialObjectArray.length; i++) {
+    if (celestialObjectArray[i].name === celestialObject.center) {
+      //Found the parent body
+      return {
+        inclination: celestialObjectArray[i].inclination
+      }
+    }
+  }
+}
+
 export function wrapNumber(number, wrap) {
   if (number > wrap) {
     return number - (number - (number % wrap))
