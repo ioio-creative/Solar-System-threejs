@@ -1,7 +1,7 @@
 import './static/css/styles.scss'
 import planetarySystems from './static/data/planetarySystems.json'
-import { createCelestialObject } from './classes/_celestialObject.js'
-import { drawOrbit } from './classes/_orbits.js'
+import { createCelestialObject, createCelestialObjectsFromArray } from './classes/_celestialObject.js'
+import { drawOrbit, drawOrbitsFromArray } from './classes/_orbits.js'
 import { createSky } from './classes/_sky.js'
 import sky from './static/img/milkyway.jpg'
 
@@ -62,9 +62,7 @@ function stop() {
 // avoid heavy computation here
 function update() {
 	//Draw orbit functionality here
-	drawOrbit(scene, planetarySystems.CelestialObjects[0], deltaT, animationSpeed);
-	drawOrbit(scene, planetarySystems.CelestialObjects[1], deltaT, animationSpeed);
-	drawOrbit(scene, planetarySystems.CelestialObjects[2], deltaT, animationSpeed);
+	drawOrbitsFromArray(planetarySystems.CelestialObjects, scene, deltaT, animationSpeed);
 	deltaT += 1;
 }
 
@@ -78,9 +76,6 @@ window.addEventListener( 'resize', onWindowResize );
 
 createSky(scene, sky);
 
-createCelestialObject(scene, planetarySystems.CelestialObjects[0]);
-createCelestialObject(scene, planetarySystems.CelestialObjects[1]);
-createCelestialObject(scene, planetarySystems.CelestialObjects[2]);
-
+createCelestialObjectsFromArray(planetarySystems.CelestialObjects, scene);
 
 start();

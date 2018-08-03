@@ -228,12 +228,12 @@ module.exports = {
     "name": "Mars",
     "scale": "0.3",
     "center": "Sun",
-    "eccentricity": "1",
-    "semimajor_axis": "1",
-    "inclination": "1",
-    "longitude": "1",
-    "periapsis_arg": "1",
-    "mean_anomaly": "1",
+    "eccentricity": "0.0934",
+    "semimajor_axis": "15.23",
+    "inclination": "5.65 deg",
+    "longitude": "49.558 deg",
+    "periapsis_arg": "286.502 deg",
+    "mean_anomaly": "320.4578 deg",
     "period": "686.98",
     "color": "#9c362c",
     "texture": ""
@@ -241,12 +241,12 @@ module.exports = {
     "name": "Jupiter",
     "scale": "1",
     "center": "Sun",
-    "eccentricity": "1",
-    "semimajor_axis": "1",
-    "inclination": "1",
-    "longitude": "1",
-    "periapsis_arg": "1",
-    "mean_anomaly": "1",
+    "eccentricity": "0.0489",
+    "semimajor_axis": "52.04",
+    "inclination": "6.09 deg",
+    "longitude": "100.464 deg",
+    "periapsis_arg": "273.867 deg",
+    "mean_anomaly": "20.020 deg",
     "period": "4332.82",
     "color": "#f2650b",
     "texture": ""
@@ -254,12 +254,12 @@ module.exports = {
     "name": "Saturn",
     "scale": "0.9",
     "center": "Sun",
-    "eccentricity": "1",
-    "semimajor_axis": "1",
-    "inclination": "1",
-    "longitude": "1",
-    "periapsis_arg": "1",
-    "mean_anomaly": "1",
+    "eccentricity": "0.0565",
+    "semimajor_axis": "64.4",
+    "inclination": "5.51 deg",
+    "longitude": "113.665 deg",
+    "periapsis_arg": "339.392 deg",
+    "mean_anomaly": "317.020 deg",
     "period": "10755.7",
     "color": "#d48029",
     "texture": ""
@@ -267,12 +267,12 @@ module.exports = {
     "name": "Uranus",
     "scale": "0.75",
     "center": "Sun",
-    "eccentricity": "1",
-    "semimajor_axis": "1",
-    "inclination": "1",
-    "longitude": "1",
-    "periapsis_arg": "1",
-    "mean_anomaly": "1",
+    "eccentricity": "0.046381",
+    "semimajor_axis": "79.5",
+    "inclination": "6.48 deg",
+    "longitude": "74.006 deg",
+    "periapsis_arg": "96.998 deg",
+    "mean_anomaly": "142.248 deg",
     "period": "30687.15",
     "color": "#7ed5cc",
     "texture": ""
@@ -280,12 +280,12 @@ module.exports = {
     "name": "Neptune",
     "scale": "0.75",
     "center": "Sun",
-    "eccentricity": "1",
-    "semimajor_axis": "1",
-    "inclination": "1",
-    "longitude": "1",
-    "periapsis_arg": "1",
-    "mean_anomaly": "1",
+    "eccentricity": "0.009456",
+    "semimajor_axis": "94.2",
+    "inclination": "6.43 deg",
+    "longitude": "131.784 deg",
+    "periapsis_arg": "276.336 deg",
+    "mean_anomaly": "256.228 deg",
     "period": "60190.03",
     "color": "#26439c",
     "texture": ""
@@ -293,12 +293,12 @@ module.exports = {
     "name": "Pluto",
     "scale": "0.1",
     "center": "Sun",
-    "eccentricity": "1",
-    "semimajor_axis": "1",
-    "inclination": "1",
-    "longitude": "1",
-    "periapsis_arg": "1",
-    "mean_anomaly": "1",
+    "eccentricity": "	0.2488",
+    "semimajor_axis": "98.2",
+    "inclination": "11.88 deg",
+    "longitude": "110.299 deg",
+    "periapsis_arg": "113.834 deg",
+    "mean_anomaly": "14.53 deg",
     "period": "90560",
     "color": "#5e5e5e",
     "texture": ""
@@ -42696,11 +42696,18 @@ exports.LensFlare = LensFlare;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.createCelestialObjectsFromArray = createCelestialObjectsFromArray;
 exports.createCelestialObject = createCelestialObject;
 
 var _logic = require('./_logic.js');
 
 var THREE = require('three');
+
+function createCelestialObjectsFromArray(celestialObjectArray, scene) {
+  for (var i = 0; i < celestialObjectArray.length; i++) {
+    createCelestialObject(scene, celestialObjectArray[i]);
+  }
+}
 
 function createCelestialObject(scene, celestialObject) {
   var geometry = new THREE.SphereGeometry(parseFloat(celestialObject.scale), 50, 50);
@@ -42776,12 +42783,22 @@ var define;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.drawOrbitsFromArray = drawOrbitsFromArray;
 exports.drawOrbit = drawOrbit;
 
 var _logic = require('./_logic.js');
 
 var THREE = require('three');
 var findRoot = require('newton-raphson');
+
+function drawOrbitsFromArray(celestialObjectArray, scene) {
+  var deltaT = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+  var animationSpeed = arguments[3];
+
+  for (var i = 0; i < celestialObjectArray.length; i++) {
+    drawOrbit(scene, celestialObjectArray[i], deltaT, animationSpeed);
+  }
+}
 
 function drawOrbit(scene, celestialObject) {
   var deltaT = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -44087,9 +44104,7 @@ function stop() {
 // avoid heavy computation here
 function update() {
 		//Draw orbit functionality here
-		(0, _orbits.drawOrbit)(scene, _planetarySystems2.default.CelestialObjects[0], deltaT, animationSpeed);
-		(0, _orbits.drawOrbit)(scene, _planetarySystems2.default.CelestialObjects[1], deltaT, animationSpeed);
-		(0, _orbits.drawOrbit)(scene, _planetarySystems2.default.CelestialObjects[2], deltaT, animationSpeed);
+		(0, _orbits.drawOrbitsFromArray)(_planetarySystems2.default.CelestialObjects, scene, deltaT, animationSpeed);
 		deltaT += 1;
 }
 
@@ -44103,9 +44118,7 @@ window.addEventListener('resize', onWindowResize);
 
 (0, _sky.createSky)(scene, _milkyway2.default);
 
-(0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[0]);
-(0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[1]);
-(0, _celestialObject.createCelestialObject)(scene, _planetarySystems2.default.CelestialObjects[2]);
+(0, _celestialObject.createCelestialObjectsFromArray)(_planetarySystems2.default.CelestialObjects, scene);
 
 start();
 },{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js","modified-newton-raphson":"node_modules/modified-newton-raphson/index.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -44137,7 +44150,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '51015' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50405' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

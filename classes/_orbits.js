@@ -3,6 +3,12 @@ import { isOrbiting, wrapNumber, checkDegToRad, hexToRgb } from './_logic.js'
 var THREE = require('three');
 var findRoot = require('newton-raphson');
 
+export function drawOrbitsFromArray(celestialObjectArray, scene, deltaT = 0, animationSpeed) {
+  for (var i = 0; i < celestialObjectArray.length; i++) {
+    drawOrbit(scene, celestialObjectArray[i], deltaT, animationSpeed);
+  }
+}
+
 export function drawOrbit(scene, celestialObject, deltaT = 0, animationSpeed) {
   var meanAnomaly = getMeanAnomaly(celestialObject, deltaT, animationSpeed);
   var eccentricAnomaly = getEccentricAnomaly(celestialObject, meanAnomaly);

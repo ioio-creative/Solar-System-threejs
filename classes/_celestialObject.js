@@ -2,6 +2,12 @@ import { isOrbiting, hexToRgb } from './_logic.js'
 
 var THREE = require('three');
 
+export function createCelestialObjectsFromArray(celestialObjectArray, scene) {
+  for (var i = 0; i < celestialObjectArray.length; i++) {
+    createCelestialObject(scene, celestialObjectArray[i]);
+  }
+}
+
 export function createCelestialObject (scene, celestialObject) {
   var geometry = new THREE.SphereGeometry(parseFloat(celestialObject.scale), 50, 50);
   var material = new THREE.MeshBasicMaterial( {color: hexToRgb(celestialObject.color) } );
