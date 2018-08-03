@@ -15,7 +15,7 @@ var camera;
 var controls;
 var container;
 
-var animationSpeed = 1;
+var animationSpeed = 2;
 var deltaT = 0;
 
 function init(containerId) {
@@ -25,6 +25,8 @@ function init(containerId) {
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( container.clientWidth, container.clientHeight, false );
+	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	renderer.physicallyCorrectLights = true;
 	container.appendChild( renderer.domElement );
 

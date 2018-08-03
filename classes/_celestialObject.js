@@ -15,9 +15,21 @@ export function createCelestialObject (scene, celestialObject) {
 
   //Lighting
   object.castShadow = true;
+
   //Check if emissive
-  if (celestialObject.intensity !== "") {
+  if (celestialObject.intensity !== undefined) {
     object.receiveShadow = false;
+    // var vertices = geometry.vertices;
+    // for (var i = 0; i < vertices.length; i++) {
+    //   var light = new THREE.PointLight(hexToRgb(celestialObject.color), parseFloat(celestialObject.intensity), parseFloat(celestialObject.intensity) * 50, 2);
+    //   light.position.x = vertices[i].x + 0.01;
+    //   light.position.y = vertices[i].y + 0.01;
+    //   light.position.z = vertices[i].z + 0.01;
+    //   light.name = celestialObject.name + "Light" + i.toString();
+    //   light.castShadow = true;
+    //   scene.add(light);
+    // }
+    
   } else {
     // Not emmsive, get shadows
     object.receiveShadow = true;
@@ -33,6 +45,7 @@ export function createCelestialObject (scene, celestialObject) {
     object.position.x = parseFloat(centerArray[0]);
     object.position.y = parseFloat(centerArray[1]);
     object.position.z = parseFloat(centerArray[2]);
+
   }
 
   //Add the celestialObject to the scene

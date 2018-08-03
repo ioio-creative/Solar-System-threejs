@@ -42729,9 +42729,20 @@ function createCelestialObject(scene, celestialObject) {
 
   //Lighting
   object.castShadow = true;
+
   //Check if emissive
-  if (celestialObject.intensity !== "") {
+  if (celestialObject.intensity !== undefined) {
     object.receiveShadow = false;
+    // var vertices = geometry.vertices;
+    // for (var i = 0; i < vertices.length; i++) {
+    //   var light = new THREE.PointLight(hexToRgb(celestialObject.color), parseFloat(celestialObject.intensity), parseFloat(celestialObject.intensity) * 50, 2);
+    //   light.position.x = vertices[i].x + 0.01;
+    //   light.position.y = vertices[i].y + 0.01;
+    //   light.position.z = vertices[i].z + 0.01;
+    //   light.name = celestialObject.name + "Light" + i.toString();
+    //   light.castShadow = true;
+    //   scene.add(light);
+    // }
   } else {
     // Not emmsive, get shadows
     object.receiveShadow = true;
@@ -42829,6 +42840,8 @@ function drawOrbit(scene, celestialObject, celestialObjectArray) {
     var parentBody = scene.getObjectByName(celestialObject.center);
     var inclination = (0, _logic.checkDegToRad)(celestialObject.inclination) + (0, _logic.checkDegToRad)((0, _logic.getParentBody)(celestialObject, celestialObjectArray).inclination);
     var coordinates = orbitCoordinates(celestialObject, trueAnomaly, radius, inclination);
+
+    //Draw position
     objectToDraw.position.x = parentBody.position.x + coordinates.x;
     objectToDraw.position.y = parentBody.position.y + coordinates.y;
     objectToDraw.position.z = parentBody.position.z + coordinates.z;
@@ -42839,6 +42852,11 @@ function drawOrbit(scene, celestialObject, celestialObjectArray) {
     objectToDraw.position.x = coordinates.x;
     objectToDraw.position.y = coordinates.y;
     objectToDraw.position.z = coordinates.z;
+  }
+
+  if (celestialObject.intensity !== undefined) {
+    //Is emitting body, update light positions
+    // var vertices = objectToDraw.geometry.vertices;
   }
 }
 
@@ -44072,7 +44090,7 @@ var camera;
 var controls;
 var container;
 
-var animationSpeed = 1;
+var animationSpeed = 2;
 var deltaT = 0;
 
 function init(containerId) {
@@ -44082,6 +44100,8 @@ function init(containerId) {
 		renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(container.clientWidth, container.clientHeight, false);
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.physicallyCorrectLights = true;
 		container.appendChild(renderer.domElement);
 

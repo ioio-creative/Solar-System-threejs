@@ -22,6 +22,8 @@ export function drawOrbit(scene, celestialObject, celestialObjectArray, deltaT =
     var parentBody = scene.getObjectByName(celestialObject.center);
     var inclination = checkDegToRad(celestialObject.inclination) + checkDegToRad(getParentBody(celestialObject, celestialObjectArray).inclination);
     var coordinates = orbitCoordinates(celestialObject, trueAnomaly, radius, inclination);
+
+    //Draw position
     objectToDraw.position.x = parentBody.position.x + coordinates.x;
     objectToDraw.position.y = parentBody.position.y + coordinates.y;
     objectToDraw.position.z = parentBody.position.z + coordinates.z;
@@ -32,6 +34,11 @@ export function drawOrbit(scene, celestialObject, celestialObjectArray, deltaT =
     objectToDraw.position.x = coordinates.x;
     objectToDraw.position.y = coordinates.y;
     objectToDraw.position.z = coordinates.z;
+  }
+
+  if (celestialObject.intensity !== undefined) {
+    //Is emitting body, update light positions
+    // var vertices = objectToDraw.geometry.vertices;
   }
 }
 
