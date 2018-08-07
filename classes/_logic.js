@@ -21,6 +21,22 @@ export function getParentBody(celestialObject, celestialObjectArray) {
   }
 }
 
+export function getBodyNames(planetarySystemsArray) {
+	var array = [];
+	for (var i = 0; i < planetarySystemsArray.length; i++) {
+		array[i] = planetarySystemsArray[i].name;
+	}
+	return array;
+}
+
+export function getBodyByName(bodyName, planetarySystemsArray) {
+  for (var i = 0; i< planetarySystemsArray.length; i++) {
+    if (planetarySystemsArray[i].name === bodyName) {
+      return planetarySystemsArray[i];
+    }
+  }
+}
+
 export function wrapNumber(number, wrap) {
   if (number > wrap) {
     return number - (number - (number % wrap))
@@ -41,7 +57,11 @@ export function checkDegToRad(number) {
   }
 }
 
-export function radtoDeg(number) {
+export function degToRad(number) {
+  return number * Math.PI / 180;
+}
+
+export function radToDeg(number) {
   return number * 180 / Math.PI;
 }
 

@@ -312,9 +312,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.isOrbiting = isOrbiting;
 exports.getParentBody = getParentBody;
+exports.getBodyNames = getBodyNames;
+exports.getBodyByName = getBodyByName;
 exports.wrapNumber = wrapNumber;
 exports.checkDegToRad = checkDegToRad;
-exports.radtoDeg = radtoDeg;
+exports.degToRad = degToRad;
+exports.radToDeg = radToDeg;
 exports.hexToRgb = hexToRgb;
 function isOrbiting(celestialObject) {
   var centerArray = celestialObject.center.split(" ", 3);
@@ -339,6 +342,22 @@ function getParentBody(celestialObject, celestialObjectArray) {
   }
 }
 
+function getBodyNames(planetarySystemsArray) {
+  var array = [];
+  for (var i = 0; i < planetarySystemsArray.length; i++) {
+    array[i] = planetarySystemsArray[i].name;
+  }
+  return array;
+}
+
+function getBodyByName(bodyName, planetarySystemsArray) {
+  for (var i = 0; i < planetarySystemsArray.length; i++) {
+    if (planetarySystemsArray[i].name === bodyName) {
+      return planetarySystemsArray[i];
+    }
+  }
+}
+
 function wrapNumber(number, wrap) {
   if (number > wrap) {
     return number - (number - number % wrap);
@@ -359,7 +378,11 @@ function checkDegToRad(number) {
   }
 }
 
-function radtoDeg(number) {
+function degToRad(number) {
+  return number * Math.PI / 180;
+}
+
+function radToDeg(number) {
   return number * 180 / Math.PI;
 }
 
@@ -42933,7 +42956,30 @@ function createSky(scene, file) {
   sky.name = "$%%Skybox%%$";
   scene.add(sky);
 }
-},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js"}],"static/img/milkyway.jpg":[function(require,module,exports) {
+},{"./_logic.js":"classes/_logic.js","three":"node_modules/three/build/three.module.js"}],"classes/_gui.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.setSelectedValue = setSelectedValue;
+exports.updateGui = updateGui;
+function setSelectedValue(selectObj, valueToSet) {
+    for (var i = 0; i < selectObj.options.length; i++) {
+        if (selectObj.options[i].text === valueToSet) {
+            selectObj.options[i].selected = true;
+            return;
+        }
+    }
+}
+
+function updateGui(gui) {
+    // Iterate over all controllers
+    for (var i in gui.__controllers) {
+        gui.__controllers[i].updateDisplay();
+    }
+}
+},{}],"static/img/milkyway.jpg":[function(require,module,exports) {
 module.exports = "/milkyway.35f9054e.jpg";
 },{}],"node_modules/three-orbit-controls/index.js":[function(require,module,exports) {
 module.exports = function( THREE ) {
@@ -46560,6 +46606,10 @@ var _orbits = require('./classes/_orbits.js');
 
 var _sky = require('./classes/_sky.js');
 
+var _gui = require('./classes/_gui.js');
+
+var _logic = require('./classes/_logic.js');
+
 var _milkyway = require('./static/img/milkyway.jpg');
 
 var _milkyway2 = _interopRequireDefault(_milkyway);
@@ -46581,6 +46631,9 @@ var cameraPosition;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var systems = _planetarySystems2.default;
+
+//GUI
+var gui = new dat.GUI();
 var nameDropdown;
 
 // custom global variables
@@ -46645,7 +46698,8 @@ function onDocumentMouseDown(event) {
 			bodyToFocus = scene.getObjectByName(intersectObject[0].object.name);
 			focusCamera(bodyToFocus);
 			//Set selected
-			setSelectedValue(nameDropdown.domElement.children[0], intersectObject[0].object.name);
+			(0, _gui.setSelectedValue)(nameDropdown.domElement.children[0], intersectObject[0].object.name);
+			updateGuiParams();
 		}
 	}
 }
@@ -46686,36 +46740,164 @@ function focusCamera(objectToFocus) {
 	camera.updateProjectionMatrix();
 }
 
+var newCelestialObject = {
+	name: "Celestial body",
+	scale: 1,
+	centerX: 0,
+	centerY: 0,
+	centerZ: 0,
+	center: "0 0 0",
+	eccentricity: 0.1,
+	semimajor_axis: 10,
+	inclination: 0,
+	longitude: 0,
+	periapsis_arg: 0,
+	mean_anomaly: 0,
+	period: 100,
+	color: "#fff000"
+};
+
 function buildGui() {
-	var gui = new dat.GUI();
 
-	var params = {
-		name: "Celestial body"
-
-	};
-
-	nameDropdown = gui.add(params, 'name', getBodyNames(systems.CelestialObjects)).onChange(function (val) {
+	nameDropdown = gui.add(params, 'name', (0, _logic.getBodyNames)(systems.CelestialObjects)).onChange(function (val) {
 		bodyToFocus = scene.getObjectByName(val);
+		updateGuiParams();
 	});
+
+	gui.add(params, 'scale', 0, 50).onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.scale = val;
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	gui.add(params, 'eccentricity', 0.000, 0.980).onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.eccentricity = val;
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	gui.add(params, 'semimajor_axis', 0, 1000).onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.semimajor_axis = val;
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	gui.add(params, 'inclination', 0, 90).onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.inclination = val.toString() + " deg";
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	gui.add(params, 'longitude', 0, 360).onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.longitude = val.toString() + " deg";
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	gui.add(params, 'periapsis_arg', 0, 360).onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.periapsis_arg = val.toString() + " deg";
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	gui.add(params, 'mean_anomaly', 0, 360).onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.mean_anomaly = val.toString() + " deg";
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	gui.add(params, 'period', 0, 10000).onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.period = val.toString();
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	gui.addColor(params, 'color').onChange(function (val) {
+		var bodyToModify = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects);
+		bodyToModify.color = val;
+		scene.remove(scene.getObjectByName(bodyToModify.name));
+		(0, _celestialObject.createCelestialObject)(scene, bodyToModify);
+		bodyToFocus = scene.getObjectByName(bodyToFocus.name);
+		render();
+	});
+
+	var createObject = gui.addFolder('Create Celestial Object');
+	createObject.add(newCelestialObject, 'name').onChange(function (val) {
+		console.log("change name");
+		console.log(systems.CelestialObjects);
+	});
+	createObject.add(newCelestialObject, 'scale', 0, 50);
+	createObject.add(newCelestialObject, 'centerX');
+	createObject.add(newCelestialObject, 'centerY');
+	createObject.add(newCelestialObject, 'centerZ');
+	createObject.add(newCelestialObject, 'eccentricity', 0, 0.98);
+	createObject.add(newCelestialObject, 'semimajor_axis', 0, 1000);
+	createObject.add(newCelestialObject, 'inclination', 0, 90);
+	createObject.add(newCelestialObject, 'longitude', 0, 360);
+	createObject.add(newCelestialObject, 'periapsis_arg', 0, 360);
+	createObject.add(newCelestialObject, 'mean_anomaly', 0, 360);
+	createObject.add(newCelestialObject, 'period', 0, 10000);
+	createObject.addColor(newCelestialObject, 'color');
+	var objectToAdd = { add: function add() {
+			newCelestialObject.name = newCelestialObject.name;
+			newCelestialObject.scale = newCelestialObject.scale.toString();
+			newCelestialObject.center = newCelestialObject.centerX.toString() + " " + newCelestialObject.centerY.toString() + " " + newCelestialObject.centerZ.toString();
+			newCelestialObject.inclination = newCelestialObject.inclination.toString() + " deg";
+			newCelestialObject.eccentricity = newCelestialObject.eccentricity.toString();
+			newCelestialObject.semimajor_axis = newCelestialObject.semimajor_axis.toString();
+			newCelestialObject.longitude = newCelestialObject.longitude.toString() + " deg";
+			newCelestialObject.periapsis_arg = newCelestialObject.periapsis_arg.toString() + " deg";
+			newCelestialObject.mean_anomaly = newCelestialObject.mean_anomaly.toString() + " deg";
+			newCelestialObject.period = newCelestialObject.period.toString();
+			(0, _celestialObject.createCelestialObject)(scene, newCelestialObject);
+			systems.CelestialObjects[systems.CelestialObjects.length] = newCelestialObject;
+			render();
+			// Set selected
+			(0, _gui.setSelectedValue)(nameDropdown.domElement.children[0], newCelestialObject.name);
+			bodyToFocus = scene.getObjectByName(newCelestialObject.name);
+			updateGuiParams();
+			return;
+		} };
+	createObject.add(objectToAdd, 'add');
 
 	gui.open;
 }
 
-function getBodyNames(planetarySystemsArray) {
-	var array = [];
-	for (var i = 0; i < planetarySystemsArray.length; i++) {
-		array[i] = planetarySystemsArray[i].name;
-	}
-	return array;
-}
-
-function setSelectedValue(selectObj, valueToSet) {
-	for (var i = 0; i < selectObj.options.length; i++) {
-		if (selectObj.options[i].text == valueToSet) {
-			selectObj.options[i].selected = true;
-			return;
-		}
-	}
+function updateGuiParams() {
+	params.scale = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).scale);
+	params.eccentricity = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).eccentricity);
+	params.semimajor_axis = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).semimajor_axis);
+	params.inclination = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).inclination);
+	params.longitude = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).longitude);
+	params.periapsis_arg = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).periapsis_arg);
+	params.mean_anomaly = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).mean_anomaly);
+	params.period = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).period);
+	params.color = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).color;
+	(0, _gui.updateGui)(gui);
 }
 
 init("container");
@@ -46725,10 +46907,27 @@ window.addEventListener('resize', onWindowResize);
 
 (0, _celestialObject.createCelestialObjectsFromArray)(systems.CelestialObjects, scene);
 
+bodyToFocus = scene.getObjectByName(systems.CelestialObjects[0].name);
+
+//Initialise GUI
+var params = {
+	name: "Body",
+	scale: parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).scale),
+	eccentricity: parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).eccentricity),
+	semimajor_axis: parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).semimajor_axis),
+	inclination: parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).inclination),
+	longitude: parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).longitude),
+	periapsis_arg: parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).periapsis_arg),
+	mean_anomaly: parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).mean_anomaly),
+	period: parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).period),
+	color: (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).color
+};
+
 buildGui();
+(0, _gui.setSelectedValue)(nameDropdown.domElement.children[0], systems.CelestialObjects[0].name);
 
 start();
-},{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js","modified-newton-raphson":"node_modules/modified-newton-raphson/index.js","dat.gui":"node_modules/dat.gui/build/dat.gui.module.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./classes/_gui.js":"classes/_gui.js","./classes/_logic.js":"classes/_logic.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js","modified-newton-raphson":"node_modules/modified-newton-raphson/index.js","dat.gui":"node_modules/dat.gui/build/dat.gui.module.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
