@@ -134,24 +134,24 @@ function focusCamera(objectToFocus) {
   camera.updateProjectionMatrix();
 }
 
-var newCelestialObject = {
-	name: "Celestial body",
-	scale: 1,
-	centerX: 0,
-	centerY: 0,
-	centerZ: 0,
-	center: "0 0 0",
-	eccentricity: 0.1,
-	semimajor_axis: 10,
-	inclination: 0,
-	longitude: 0,
-	periapsis_arg: 0,
-	mean_anomaly: 0,
-	period: 100,
-	color: "#fff000",
-};
-
 function buildGui() {
+
+	var newCelestialObject = {
+		name: "Celestial body",
+		scale: 1,
+		centerX: 0,
+		centerY: 0,
+		centerZ: 0,
+		center: "0 0 0",
+		eccentricity: 0.1,
+		semimajor_axis: 10,
+		inclination: 0,
+		longitude: 0,
+		periapsis_arg: 0,
+		mean_anomaly: 0,
+		period: 100,
+		color: "#fff000",
+	};
 
 	nameDropdown = gui.add(params, 'name', getBodyNames(systems.CelestialObjects)).onChange(function(val) {
 		bodyToFocus = scene.getObjectByName(val);
@@ -240,10 +240,7 @@ function buildGui() {
 	});
 
 	var createObject = gui.addFolder('Create Celestial Object');
-	createObject.add(newCelestialObject, 'name').onChange(function(val) {
-		console.log("change name");
-		console.log(systems.CelestialObjects);
-	});
+	createObject.add(newCelestialObject, 'name')
 	createObject.add(newCelestialObject, 'scale', 0, 50);
 	createObject.add(newCelestialObject, 'centerX');
 	createObject.add(newCelestialObject, 'centerY');
@@ -257,24 +254,35 @@ function buildGui() {
 	createObject.add(newCelestialObject, 'period', 0, 10000);
 	createObject.addColor(newCelestialObject, 'color');
 	var objectToAdd = { add:function(){
-		newCelestialObject.name = newCelestialObject.name;
-		newCelestialObject.scale = newCelestialObject.scale.toString();
-		newCelestialObject.center = newCelestialObject.centerX.toString() + " " + newCelestialObject.centerY.toString() + " " + newCelestialObject.centerZ.toString();
-		newCelestialObject.inclination = newCelestialObject.inclination.toString() + " deg";
-		newCelestialObject.eccentricity = newCelestialObject.eccentricity.toString();
-		newCelestialObject.semimajor_axis = newCelestialObject.semimajor_axis.toString();
-		newCelestialObject.longitude = newCelestialObject.longitude.toString() + " deg";
-		newCelestialObject.periapsis_arg = newCelestialObject.periapsis_arg.toString() + " deg";
-		newCelestialObject.mean_anomaly = newCelestialObject.mean_anomaly.toString() + " deg";
-		newCelestialObject.period = newCelestialObject.period.toString();
-		createCelestialObject(scene, newCelestialObject);
-		systems.CelestialObjects[systems.CelestialObjects.length] = newCelestialObject;
+		var objectHolder = {};
+		objectHolder.name = newCelestialObject.name;
+		objectHolder.scale = newCelestialObject.scale.toString();
+		objectHolder.center = newCelestialObject.centerX.toString() + " " + newCelestialObject.centerY.toString() + " " + newCelestialObject.centerZ.toString();
+		objectHolder.inclination = newCelestialObject.inclination.toString() + " deg";
+		objectHolder.eccentricity = newCelestialObject.eccentricity.toString();
+		objectHolder.semimajor_axis = newCelestialObject.semimajor_axis.toString();
+		objectHolder.longitude = newCelestialObject.longitude.toString() + " deg";
+		objectHolder.periapsis_arg = newCelestialObject.periapsis_arg.toString() + " deg";
+		objectHolder.mean_anomaly = newCelestialObject.mean_anomaly.toString() + " deg";
+		objectHolder.period = newCelestialObject.period.toString();
+		objectHolder.color = newCelestialObject.color;
+		createCelestialObject(scene, objectHolder);
+		systems.CelestialObjects.push(objectHolder);
+
 		render();
 		// Set selected
-		setSelectedValue(nameDropdown.domElement.children[0], newCelestialObject.name);
-		bodyToFocus = scene.getObjectByName(newCelestialObject.name);
+		bodyToFocus = scene.getObjectByName(objectHolder.name);
 		updateGuiParams();
-		return;
+		//Update name dropdown
+		for(var i = 0; i < systems.CelestialObjects.length; i++) {
+    	var dropdownName = getBodyNames(systems.CelestialObjects)[i];
+			console.log(dropdownName);
+    	var dropdownItem = document.createElement("option");
+    	dropdownItem.textContent = dropdownName;
+    	dropdownItem.value = dropdownName;
+    	nameDropdown.domElement.children[0].appendChild(dropdownItem);
+		};
+		setSelectedValue(nameDropdown.domElement.children[0], objectHolder.name);
 	}};
 	createObject.add(objectToAdd, 'add');
 
