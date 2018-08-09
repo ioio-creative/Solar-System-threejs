@@ -18,5 +18,8 @@
     "node-sass": "^4.9.2",
     "three": "^0.94.0",
     "three-orbit-controls": "^82.1.0"
+  },
+  "devDependencies": {
+    "cssnano": "^4.0.5"
   }
 }
