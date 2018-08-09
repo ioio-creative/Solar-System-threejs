@@ -1,4 +1,3 @@
-import './static/css/styles.scss'
 import planetarySystems from './static/data/planetarySystems.json'
 import { createCelestialObject, createCelestialObjectsFromArray } from './classes/_celestialObject.js'
 import { drawOrbit, drawOrbitsFromArray } from './classes/_orbits.js'
@@ -11,6 +10,7 @@ var THREE = require('three');
 var OrbitControls = require('three-orbit-controls')(THREE);
 var findRoot = require('modified-newton-raphson');
 const dat = require('dat.gui');
+import './static/css/styles.scss'
 
 var scene;
 var renderer;
@@ -274,9 +274,12 @@ function buildGui() {
 		bodyToFocus = scene.getObjectByName(objectHolder.name);
 		updateGuiParams();
 		//Update name dropdown
+		while(nameDropdown.domElement.children[0].firstChild) {
+			//Remove all previous elements in dropdown
+			nameDropdown.domElement.children[0].removeChild(nameDropdown.domElement.children[0].firstChild);
+		}
 		for(var i = 0; i < systems.CelestialObjects.length; i++) {
     	var dropdownName = getBodyNames(systems.CelestialObjects)[i];
-			console.log(dropdownName);
     	var dropdownItem = document.createElement("option");
     	dropdownItem.textContent = dropdownName;
     	dropdownItem.value = dropdownName;
@@ -301,6 +304,14 @@ function updateGuiParams() {
 	params.color = getBodyByName(bodyToFocus.name, systems.CelestialObjects).color;
 	updateGui(gui);
 }
+
+//
+//
+//
+// Initialise the whole scene and build GUI
+//
+//
+//
 
 init("container");
 window.addEventListener( 'resize', onWindowResize );

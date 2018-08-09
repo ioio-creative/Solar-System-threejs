@@ -103,73 +103,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
-  }
-
-  return bundleURL;
-}
-
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
-    if (matches) {
-      return getBaseURL(matches[0]);
-    }
-  }
-
-  return '/';
-}
-
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
-
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
-
-function updateLink(link) {
-  var newLink = link.cloneNode();
-  newLink.onload = function () {
-    link.remove();
-  };
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
-
-var cssTimeout = null;
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
-    }
-
-    cssTimeout = null;
-  }, 50);
-}
-
-module.exports = reloadCSS;
-},{"./bundle-url":"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"static/css/styles.scss":[function(require,module,exports) {
-
-var reloadCSS = require('_css_loader');
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"static/data/planetarySystems.json":[function(require,module,exports) {
+})({"static/data/planetarySystems.json":[function(require,module,exports) {
 module.exports = {
   "CelestialObjects": [{
     "name": "Sun",
@@ -46591,10 +46525,74 @@ exports.gui = gui;
 exports.GUI = GUI$1;
 exports.default = index;
 //# sourceMappingURL=dat.gui.module.js.map
-},{}],"index.js":[function(require,module,exports) {
-'use strict';
+},{}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
 
-require('./static/css/styles.scss');
+  return bundleURL;
+}
+
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+  newLink.onload = function () {
+    link.remove();
+  };
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"static/css/styles.scss":[function(require,module,exports) {
+
+var reloadCSS = require('_css_loader');
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"index.js":[function(require,module,exports) {
+'use strict';
 
 var _planetarySystems = require('./static/data/planetarySystems.json');
 
@@ -46614,12 +46612,15 @@ var _milkyway = require('./static/img/milkyway.jpg');
 
 var _milkyway2 = _interopRequireDefault(_milkyway);
 
+require('./static/css/styles.scss');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var THREE = require('three');
 var OrbitControls = require('three-orbit-controls')(THREE);
 var findRoot = require('modified-newton-raphson');
 var dat = require('dat.gui');
+
 
 var scene;
 var renderer;
@@ -46880,9 +46881,12 @@ function buildGui() {
 			bodyToFocus = scene.getObjectByName(objectHolder.name);
 			updateGuiParams();
 			//Update name dropdown
+			while (nameDropdown.domElement.children[0].firstChild) {
+				//Remove all previous elements in dropdown
+				nameDropdown.domElement.children[0].removeChild(nameDropdown.domElement.children[0].firstChild);
+			}
 			for (var i = 0; i < systems.CelestialObjects.length; i++) {
 				var dropdownName = (0, _logic.getBodyNames)(systems.CelestialObjects)[i];
-				console.log(dropdownName);
 				var dropdownItem = document.createElement("option");
 				dropdownItem.textContent = dropdownName;
 				dropdownItem.value = dropdownName;
@@ -46907,6 +46911,14 @@ function updateGuiParams() {
 	params.color = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).color;
 	(0, _gui.updateGui)(gui);
 }
+
+//
+//
+//
+// Initialise the whole scene and build GUI
+//
+//
+//
 
 init("container");
 window.addEventListener('resize', onWindowResize);
@@ -46935,7 +46947,7 @@ buildGui();
 (0, _gui.setSelectedValue)(nameDropdown.domElement.children[0], systems.CelestialObjects[0].name);
 
 start();
-},{"./static/css/styles.scss":"static/css/styles.scss","./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./classes/_gui.js":"classes/_gui.js","./classes/_logic.js":"classes/_logic.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js","modified-newton-raphson":"node_modules/modified-newton-raphson/index.js","dat.gui":"node_modules/dat.gui/build/dat.gui.module.js"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./static/data/planetarySystems.json":"static/data/planetarySystems.json","./classes/_celestialObject.js":"classes/_celestialObject.js","./classes/_orbits.js":"classes/_orbits.js","./classes/_sky.js":"classes/_sky.js","./classes/_gui.js":"classes/_gui.js","./classes/_logic.js":"classes/_logic.js","./static/img/milkyway.jpg":"static/img/milkyway.jpg","three":"node_modules/three/build/three.module.js","three-orbit-controls":"node_modules/three-orbit-controls/index.js","modified-newton-raphson":"node_modules/modified-newton-raphson/index.js","dat.gui":"node_modules/dat.gui/build/dat.gui.module.js","./static/css/styles.scss":"static/css/styles.scss"}],"../../../../.nvm/versions/node/v10.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -46964,7 +46976,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '57288' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50001' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
