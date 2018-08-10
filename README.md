@@ -11,6 +11,8 @@ View here: https://ioio-creative.github.io/Solar-System-threejs/
 - [X] Modular code base for easy editing
 
 ## To-do:
+- [ ] Remove celestial object functionality
+- [ ] Orbit other body in GUI functionality
 - [ ] Separate GUI into its own file
 - [ ] Textures
 - [ ] Lighting
