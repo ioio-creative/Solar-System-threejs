@@ -11,6 +11,7 @@ View here: https://ioio-creative.github.io/Solar-System-threejs/
 - [X] Modular code base for easy editing
 
 ## To-do:
+- [ ] Separate GUI into its own file
 - [ ] Textures
 - [ ] Lighting
 - [ ] Add physics (if the browser doesn't explode)
