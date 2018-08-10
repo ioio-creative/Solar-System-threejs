@@ -236,7 +236,8 @@ module.exports = {
     "period": "90560",
     "color": "#5e5e5e",
     "texture": ""
-  }]
+  }],
+  "time": 0
 };
 },{}],"classes/_logic.js":[function(require,module,exports) {
 "use strict";
@@ -46639,7 +46640,7 @@ var nameDropdown;
 
 // custom global variables
 var animationSpeed = 0.3;
-var deltaT = 0;
+var deltaT = systems.time;
 
 function init(containerId) {
 	//Setup scene and renderer
@@ -46722,6 +46723,7 @@ function update() {
 	//Draw orbit functionality here
 	(0, _orbits.drawOrbitsFromArray)(systems.CelestialObjects, scene, deltaT, animationSpeed);
 	deltaT += 1;
+	systems.time = deltaT;
 	if (bodyToFocus === undefined) {
 		//Do nothing
 	} else {
@@ -46743,22 +46745,7 @@ function focusCamera(objectToFocus) {
 
 function buildGui() {
 
-	var newCelestialObject = {
-		name: "Celestial body",
-		scale: 1,
-		centerX: 0,
-		centerY: 0,
-		centerZ: 0,
-		center: "0 0 0",
-		eccentricity: 0.1,
-		semimajor_axis: 10,
-		inclination: 0,
-		longitude: 0,
-		periapsis_arg: 0,
-		mean_anomaly: 0,
-		period: 100,
-		color: "#fff000"
-	};
+	//Build GUI for selected celestial objects
 
 	nameDropdown = gui.add(params, 'name', (0, _logic.getBodyNames)(systems.CelestialObjects)).onChange(function (val) {
 		bodyToFocus = scene.getObjectByName(val);
@@ -46846,6 +46833,25 @@ function buildGui() {
 		render();
 	});
 
+	//Build GUI for new objects to add
+
+	var newCelestialObject = {
+		name: "Celestial body",
+		scale: 1,
+		centerX: 0,
+		centerY: 0,
+		centerZ: 0,
+		center: "0 0 0",
+		eccentricity: 0.1,
+		semimajor_axis: 10,
+		inclination: 0,
+		longitude: 0,
+		periapsis_arg: 0,
+		mean_anomaly: 0,
+		period: 100,
+		color: "#fff000"
+	};
+
 	var createObject = gui.addFolder('Create Celestial Object');
 	createObject.add(newCelestialObject, 'name');
 	createObject.add(newCelestialObject, 'scale', 0, 50);
@@ -46880,23 +46886,77 @@ function buildGui() {
 			// Set selected
 			bodyToFocus = scene.getObjectByName(objectHolder.name);
 			updateGuiParams();
-			//Update name dropdown
-			while (nameDropdown.domElement.children[0].firstChild) {
-				//Remove all previous elements in dropdown
-				nameDropdown.domElement.children[0].removeChild(nameDropdown.domElement.children[0].firstChild);
-			}
-			for (var i = 0; i < systems.CelestialObjects.length; i++) {
-				var dropdownName = (0, _logic.getBodyNames)(systems.CelestialObjects)[i];
-				var dropdownItem = document.createElement("option");
-				dropdownItem.textContent = dropdownName;
-				dropdownItem.value = dropdownName;
-				nameDropdown.domElement.children[0].appendChild(dropdownItem);
-			};
+			updateDropdown();
 			(0, _gui.setSelectedValue)(nameDropdown.domElement.children[0], objectHolder.name);
 		} };
 	createObject.add(objectToAdd, 'add');
 
+	var saveFunc = { save: function save() {
+			var systemsJSON = JSON.stringify(systems, null, 4);
+			document.getElementById("save").style.visibility = "visible";
+			document.getElementById('saveData').value = systemsJSON;
+		} };
+
+	var loadFunc = { load: function load() {
+			document.getElementById("load").style.visibility = "visible";
+		} };
+
+	//Save load functionality
+	var saveLoad = gui.addFolder('Save & Load');
+	saveLoad.add(saveFunc, 'save');
+	saveLoad.add(loadFunc, 'load');
+
 	gui.open;
+}
+
+//Save and load buttons
+
+// Get the button, and when the user clicks on it, execute saveButton()
+document.getElementById("okSave").onclick = function () {
+	saveButton();
+};
+
+function saveButton() {
+	document.getElementById('save').style.visibility = "hidden";
+}
+
+document.getElementById("cancelLoad").onclick = function () {
+	cancelLoad();
+};
+
+function cancelLoad() {
+	document.getElementById('load').style.visibility = "hidden";
+}
+
+document.getElementById("saveLoad").onclick = function () {
+	loadButton();
+};
+
+function loadButton() {
+	var pastSaveJSON = document.getElementById("loadData").value;
+	if (pastSaveJSON === "") {
+		// invalid
+		alert("Code is invalid!");
+	} else {
+		document.getElementById('load').style.visibility = "hidden";
+		document.getElementById('loadData').value = "";
+		var pastSave = JSON.parse(pastSaveJSON);
+		//Stop render
+		stop();
+		for (var i = 0; i < systems.CelestialObjects.length; i++) {
+			//Remove all the celestial objects in the scene
+			scene.remove(scene.getObjectByName(systems.CelestialObjects[i].name));
+		}
+		systems = pastSave;
+		deltaT = systems.time;
+		(0, _celestialObject.createCelestialObjectsFromArray)(systems.CelestialObjects, scene);
+		start();
+		bodyToFocus = scene.getObjectByName(systems.CelestialObjects[0].name);
+		focusCamera(bodyToFocus);
+		updateDropdown();
+		updateGuiParams();
+		(0, _gui.setSelectedValue)(nameDropdown.domElement.children[0], systems.CelestialObjects[0].name);
+	}
 }
 
 function updateGuiParams() {
@@ -46910,6 +46970,21 @@ function updateGuiParams() {
 	params.period = parseFloat((0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).period);
 	params.color = (0, _logic.getBodyByName)(bodyToFocus.name, systems.CelestialObjects).color;
 	(0, _gui.updateGui)(gui);
+}
+
+function updateDropdown() {
+	//Update name dropdown
+	while (nameDropdown.domElement.children[0].firstChild) {
+		//Remove all previous elements in dropdown
+		nameDropdown.domElement.children[0].removeChild(nameDropdown.domElement.children[0].firstChild);
+	}
+	for (var i = 0; i < systems.CelestialObjects.length; i++) {
+		var dropdownName = (0, _logic.getBodyNames)(systems.CelestialObjects)[i];
+		var dropdownItem = document.createElement("option");
+		dropdownItem.textContent = dropdownName;
+		dropdownItem.value = dropdownName;
+		nameDropdown.domElement.children[0].appendChild(dropdownItem);
+	};
 }
 
 //
@@ -46976,7 +47051,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50001' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59462' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
