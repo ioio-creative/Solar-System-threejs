@@ -91,8 +91,8 @@ function onDocumentMouseDown( event )
 			bodyToFocus = scene.getObjectByName(intersectObject[0].object.name)
 			focusCamera(bodyToFocus);
 			//Set selected
-			setSelectedValue(nameDropdown.domElement.children[0], intersectObject[0].object.name);
 			updateGuiParams();
+			setSelectedValue(nameDropdown.domElement.children[0], intersectObject[0].object.name);
 		}
 	}
 

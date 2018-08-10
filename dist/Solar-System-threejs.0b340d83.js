@@ -46700,8 +46700,8 @@ function onDocumentMouseDown(event) {
 			bodyToFocus = scene.getObjectByName(intersectObject[0].object.name);
 			focusCamera(bodyToFocus);
 			//Set selected
-			(0, _gui.setSelectedValue)(nameDropdown.domElement.children[0], intersectObject[0].object.name);
 			updateGuiParams();
+			(0, _gui.setSelectedValue)(nameDropdown.domElement.children[0], intersectObject[0].object.name);
 		}
 	}
 }
@@ -47051,7 +47051,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59462' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '61553' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
