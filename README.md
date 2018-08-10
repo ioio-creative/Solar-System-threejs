@@ -13,3 +13,4 @@ View here: https://ioio-creative.github.io/Solar-System-threejs/
 ## To-do:
 - [ ] Textures
 - [ ] Lighting
+- [ ] Add physics (if the browser doesn't explode)
